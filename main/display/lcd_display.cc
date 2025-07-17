@@ -771,7 +771,7 @@ void LcdDisplay::SetupUI() {
     lv_label_set_text(status_label_, Lang::Strings::INITIALIZING);
     // 设置宽度并放在表情下方
     lv_obj_set_width(status_label_, 100);
-    lv_obj_set_pos(status_label_, 51, 120);  // 放在表情下方
+    lv_obj_set_pos(status_label_, 70, 180);  // 放在表情下方
 
     // 创建文字标签也在固定容器中，绝对定位在屏幕中央
     chat_message_label_ = lv_label_create(fixed_container);
