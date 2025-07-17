@@ -738,25 +738,56 @@ void LcdDisplay::SetupUI() {
     lv_obj_set_style_bg_color(content_, current_theme_.chat_background, 0);
     lv_obj_set_style_border_color(content_, current_theme_.border, 0); // Border color for content
 
-    lv_obj_set_flex_flow(content_, LV_FLEX_FLOW_COLUMN); // 垂直布局（从上到下）
-    lv_obj_set_flex_align(content_, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_SPACE_EVENLY); // 子对象居中对齐，等距分布
+    // lv_obj_set_flex_flow(content_, LV_FLEX_FLOW_COLUMN); // 垂直布局（从上到下）
+    // lv_obj_set_flex_align(content_, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_SPACE_EVENLY); // 子对象居中对齐，等距分布
 
-    emotion_label_ = lv_label_create(content_);
+    /*************************************************************************
+    
+    2025-07-17 14:00:00 修改表情大小
+    
+    ***********************************************************************/
+    // 创建固定位置的容器，不受flex布局影响    CJ
+    lv_obj_t* fixed_container = lv_obj_create(content_);
+    lv_obj_set_size(fixed_container, LV_HOR_RES, LV_VER_RES);
+    lv_obj_set_style_bg_opa(fixed_container, LV_OPA_TRANSP, 0); // 透明背景
+    lv_obj_set_style_border_width(fixed_container, 0, 0); // 无边框
+    lv_obj_set_style_pad_all(fixed_container, 0, 0); // 无内边距
+    
+    // 创建表情标签在固定容器中        CJ
+    emotion_label_ = lv_label_create(fixed_container);
+
     lv_obj_set_style_text_font(emotion_label_, &font_awesome_30_4, 0);
     lv_obj_set_style_text_color(emotion_label_, current_theme_.text, 0);
     lv_label_set_text(emotion_label_, FONT_AWESOME_AI_CHIP);
+    
+    // 固定表情位置到左上角    CJ
+    lv_obj_set_pos(emotion_label_, 30, 0);
+    
+    // 将时间显示放在表情的正下方
+    status_label_ = lv_label_create(fixed_container);
+    lv_label_set_long_mode(status_label_, LV_LABEL_LONG_SCROLL_CIRCULAR);
+    lv_obj_set_style_text_align(status_label_, LV_TEXT_ALIGN_CENTER, 0);
+    lv_obj_set_style_text_color(status_label_, current_theme_.text, 0);
+    lv_label_set_text(status_label_, Lang::Strings::INITIALIZING);
+    // 设置宽度并放在表情下方
+    lv_obj_set_width(status_label_, 100);
+    lv_obj_set_pos(status_label_, 51, 120);  // 放在表情下方
 
-    preview_image_ = lv_image_create(content_);
-    lv_obj_set_size(preview_image_, width_ * 0.5, height_ * 0.5);
-    lv_obj_align(preview_image_, LV_ALIGN_CENTER, 0, 0);
-    lv_obj_add_flag(preview_image_, LV_OBJ_FLAG_HIDDEN);
-
-    chat_message_label_ = lv_label_create(content_);
+    // 创建文字标签也在固定容器中，绝对定位在屏幕中央
+    chat_message_label_ = lv_label_create(fixed_container);
     lv_label_set_text(chat_message_label_, "");
     lv_obj_set_width(chat_message_label_, LV_HOR_RES * 0.9); // 限制宽度为屏幕宽度的 90%
     lv_label_set_long_mode(chat_message_label_, LV_LABEL_LONG_WRAP); // 设置为自动换行模式
     lv_obj_set_style_text_align(chat_message_label_, LV_TEXT_ALIGN_CENTER, 0); // 设置文本居中对齐
     lv_obj_set_style_text_color(chat_message_label_, current_theme_.text, 0);
+    
+    // 将文字标签定位到屏幕中央
+    lv_obj_align(chat_message_label_, LV_ALIGN_CENTER, 0, 0);
+
+    preview_image_ = lv_image_create(fixed_container);
+    lv_obj_set_size(preview_image_, width_ * 0.5, height_ * 0.5);
+    lv_obj_align(preview_image_, LV_ALIGN_CENTER, 0, 0);
+    lv_obj_add_flag(preview_image_, LV_OBJ_FLAG_HIDDEN);
 
     /* Status bar */
     lv_obj_set_flex_flow(status_bar_, LV_FLEX_FLOW_ROW);
@@ -778,12 +809,15 @@ void LcdDisplay::SetupUI() {
     lv_label_set_text(notification_label_, "");
     lv_obj_add_flag(notification_label_, LV_OBJ_FLAG_HIDDEN);
 
-    status_label_ = lv_label_create(status_bar_);
-    lv_obj_set_flex_grow(status_label_, 1);
-    lv_label_set_long_mode(status_label_, LV_LABEL_LONG_SCROLL_CIRCULAR);
-    lv_obj_set_style_text_align(status_label_, LV_TEXT_ALIGN_CENTER, 0);
-    lv_obj_set_style_text_color(status_label_, current_theme_.text, 0);
-    lv_label_set_text(status_label_, Lang::Strings::INITIALIZING);
+    // 将时间显示移到fixed_container中
+    // status_label_ = lv_label_create(fixed_container); // This line is now redundant as status_label_ is created above
+    // lv_label_set_long_mode(status_label_, LV_LABEL_LONG_SCROLL_CIRCULAR); // This line is now redundant as status_label_ is created above
+    // lv_obj_set_style_text_align(status_label_, LV_TEXT_ALIGN_CENTER, 0); // This line is now redundant as status_label_ is created above
+    // lv_label_set_text(status_label_, Lang::Strings::INITIALIZING); // This line is now redundant as status_label_ is created above
+    // // 设置宽度并在底部居中显示 // This line is now redundant as status_label_ is created above
+    // lv_obj_set_width(status_label_, LV_HOR_RES * 0.9); // This line is now redundant as status_label_ is created above
+    // lv_obj_align(status_label_, LV_ALIGN_BOTTOM_MID, 0, -10); // This line is now redundant as status_label_ is created above
+    
     mute_label_ = lv_label_create(status_bar_);
     lv_label_set_text(mute_label_, "");
     lv_obj_set_style_text_font(mute_label_, fonts_.icon_font, 0);
@@ -875,6 +909,10 @@ void LcdDisplay::SetEmotion(const char* emotion) {
 
     // 如果找到匹配的表情就显示对应图标，否则显示默认的neutral表情
     lv_obj_set_style_text_font(emotion_label_, fonts_.emoji_font, 0);
+
+    // 放大表情文本为原来的3倍大小       CJ
+    lv_obj_set_style_transform_zoom(emotion_label_ , 700 , 0);  // 256对应100%，512对应200%
+
     if (it != emotions.end()) {
         lv_label_set_text(emotion_label_, it->icon);
     } else {
