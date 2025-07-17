@@ -7301,6 +7301,26 @@
                     },
                     {
                         "children": [],
+                        "depends_on": "IDF_TARGET_ESP32S3 && <choice BOARD_TYPE>",
+                        "help": null,
+                        "id": "BOARD_TYPE_LABPLUS_MPYTHON_V3",
+                        "name": "BOARD_TYPE_LABPLUS_MPYTHON_V3",
+                        "range": null,
+                        "title": "labplus mpython_v3 board",
+                        "type": "bool"
+                    },
+                    {
+                        "children": [],
+                        "depends_on": "IDF_TARGET_ESP32S3 && IDF_TARGET_ESP32S3 && <choice BOARD_TYPE>",
+                        "help": null,
+                        "id": "BOARD_TYPE_LABPLUS_LEDONG_V2",
+                        "name": "BOARD_TYPE_LABPLUS_LEDONG_V2",
+                        "range": null,
+                        "title": "labplus ledong_v2 board",
+                        "type": "bool"
+                    },
+                    {
+                        "children": [],
                         "depends_on": "IDF_TARGET_ESP32C3 && <choice BOARD_TYPE>",
                         "help": null,
                         "id": "BOARD_TYPE_SURFER_C3_1_14TFT",
